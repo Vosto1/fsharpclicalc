@@ -1,0 +1,34 @@
+%start Expr
+
+%token NUM
+%token LPAR
+%token RPAR
+
+%token ADD
+%token SUB
+%token DIV
+%token MUL
+%token UMINUS
+
+%%
+
+Expr : Expr2 Expr12
+    ;
+
+Expr12 : ADD Expr2 Expr12
+    | SUB Expr2 Expr12
+    |
+    ;
+
+Expr2 : Expr3 Expr22
+    ;
+
+Expr22 : MUL Expr3 Expr22
+    | DIV Expr3 Expr22
+    |
+    ;
+
+Expr3 : NUM
+    | LPAR Expr RPAR
+    | UMINUS Expr3
+    ;

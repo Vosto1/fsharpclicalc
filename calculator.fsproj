@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Calculator</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Tuple.fs" />
+    <Compile Include="AbstractSyntax.fs" />
+    <Compile Include="Lexer.fs" />
+    <Compile Include="Parser.fs" />
+    <Compile Include="Interpreter.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+</Project>
