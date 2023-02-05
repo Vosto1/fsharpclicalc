@@ -25,13 +25,6 @@ module Interpreter =
             match operator with
             | UMINUS -> -x
 
-        (*let rec eval expr =
-            match expr with
-            | Number(x) -> x
-            | BinaryOperatorExpression(x, y, z) -> let a, b = eval x, eval z in validateOperation a y b; executeOperation a y b 
-            | UnaryOperatorExpression(x, y) -> executeUnaryOperation x (eval y)
-            | ParanthesisedExpression(x) -> eval x
-            | x -> raise (EvaluationError($"Unrecognized construct \"{x}\"."))*)
         let rec eval expr =
             match expr with
             | Number(x) -> (Nothing, x)

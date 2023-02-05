@@ -39,9 +39,6 @@ module Program =
 
     [<EntryPoint>]
     let Main (args : string[]) : int =
-        //let program = "1234+4321//6534*(123+321)" // should generate error
-        //let program = "1234+4321/6534*(123+321)" // should pass
-        //let program = "-1234+-4321/-6534*-(-123+-321)" // should pass
         printfn "write an expression.\n\"quit\" to stop the program."
         run ()
         0
