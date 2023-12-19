@@ -1,8 +1,8 @@
-namespace Calculator
+namespace Calculator.Parser
 
-open Tuple
-open Lexer
-open AbstractSyntax
+open Calculator.Core.Tuple
+open Calculator.Core.AbstractSyntax
+open Calculator.Lexer.Lexer
 module Parser =
     exception ParseError of string
     let mutable Index = 0

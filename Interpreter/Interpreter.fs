@@ -1,7 +1,7 @@
-namespace Calculator
+namespace Calculator.Interpreter
 
-open Tuple
-open AbstractSyntax
+open Calculator.Core.Tuple
+open Calculator.Core.AbstractSyntax
 module Interpreter =
     type NextOperation =
         | Nothing

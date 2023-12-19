@@ -1,4 +1,4 @@
-namespace Calculator
+namespace Calculator.Core
 
 module AbstractSyntax =
     type Operator =

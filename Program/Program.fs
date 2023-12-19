@@ -1,9 +1,9 @@
-﻿namespace Calculator
+﻿namespace Calculator.Program
 
-open Interpreter
-open Tuple
-open Parser
-open Lexer
+open Calculator.Interpreter.Interpreter
+open Calculator.Core.Tuple
+open Calculator.Parser.Parser
+open Calculator.Lexer.Lexer
 module Program =
 
     let rec LexAndPrint string index  =

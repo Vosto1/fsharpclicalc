@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Calculator.Program</RootNamespace>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.fsproj" />
+    <ProjectReference Include="..\Interpreter\Interpreter.fsproj" />
+    <ProjectReference Include="..\Lexer\Lexer.fsproj" />
+    <ProjectReference Include="..\Parser\Parser.fsproj" />
+  </ItemGroup>
+
+</Project>

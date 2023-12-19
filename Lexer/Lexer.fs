@@ -1,7 +1,7 @@
-namespace Calculator
+namespace Calculator.Lexer
 
-open Tuple
-open AbstractSyntax
+open Calculator.Core.Tuple
+open Calculator.Core.AbstractSyntax
 module Lexer = 
     open System.Text.RegularExpressions
     exception MatchError of string
