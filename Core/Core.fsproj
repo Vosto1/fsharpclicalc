@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Include="Tuple.fs" />
     <Compile Include="AbstractSyntax.fs" />
+    <Compile Include="Result.fs" />
   </ItemGroup>
 
 </Project>

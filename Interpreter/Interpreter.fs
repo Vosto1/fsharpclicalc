@@ -2,6 +2,7 @@ namespace Calculator.Interpreter
 
 open Calculator.Core.Tuple
 open Calculator.Core.AbstractSyntax
+open Calculator.Core.Result
 module Interpreter =
     type NextOperation =
         | Nothing
@@ -14,6 +15,7 @@ module Interpreter =
             match operator with
             | DIV -> if y = 0 then raise (EvaluationError($"Division by zero {x} / {y}.")) else ()
             | _ -> ()
+
         let executeOperation (x : float) (operator : Operator) (y : float) =
             match operator with
             | ADD -> x + y
@@ -32,7 +34,7 @@ module Interpreter =
                 let res1, res2 = eval x
                 let res3, res4 = eval y
                 match res3 with
-                | Operator(o) -> 
+                | Operator(o) ->
                     validateOperation res2 o res4 |> ignore
                     let value = executeOperation res2 o res4
                     (res1, value)
@@ -49,7 +51,7 @@ module Interpreter =
                         | (SUB, SUB) ->
                             let value = executeOperation res2 ADD res4
                             (Operator(x), value)
-                        | (SUB, ADD) -> 
+                        | (SUB, ADD) ->
                             let value = executeOperation res2 SUB res4
                             (Operator(x), value)
                         | _ ->
