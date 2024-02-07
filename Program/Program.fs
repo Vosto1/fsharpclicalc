@@ -1,5 +1,6 @@
 ﻿namespace Calculator.Program
 
+open Calculator.Core.Result
 open Calculator.Interpreter.Interpreter
 open Calculator.Core.Tuple
 open Calculator.Parser.Parser
@@ -31,7 +32,8 @@ module Program =
                 | (success, expression) when success ->
                     printfn ""
                     printfn "Parse successful\n%A" expression
-                    printfn "\nResult: %f" (second2 (Evaluate expression))
+                    printfn "\nResult: %f" (
+                        Reduce (Evaluate expression) (fun result -> result) (fun _ -> 0.0))
                 | _ -> printfn "Parse failed."
             with
                 | MatchError(x) -> printfn "Lexing failed: %s" x

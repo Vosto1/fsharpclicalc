@@ -3,7 +3,7 @@ namespace Calculator.Core
 module Result =
     type Result<'a> = 
         | Success of 'a
-        | Error of 'a
+        | Error of string
 
     let Bind result func =
         match result with
