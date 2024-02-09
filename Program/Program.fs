@@ -33,7 +33,8 @@ module Program =
                     printfn ""
                     printfn "Parse successful\n%A" expression
                     printfn "\nResult: %f" (
-                        Reduce (Evaluate expression) (fun result -> result) (fun _ -> 0.0))
+                        Reduce (Evaluate expression) 
+                            (fun result -> result) (fun error -> printf "%s " error; 0.0))
                 | _ -> printfn "Parse failed."
             with
                 | MatchError(x) -> printfn "Lexing failed: %s" x
