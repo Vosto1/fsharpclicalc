@@ -25,19 +25,18 @@ module Program =
             printfn "write an expression.\n\"quit\" to stop the program."
             printfn "------------------------------------------------------------------------------------"
             printfn ">%s\n" program
-            try
-                LexAndPrint program 0 |> ignore
-                let expr = (parse program)
-                match expr with
-                | (success, expression) when success ->
-                    printfn ""
-                    printfn "Parse successful\n%A" expression
-                    printfn "\nResult: %f" (
-                        Reduce (Evaluate expression) 
-                            (fun result -> result) (fun error -> printf "%s " error; 0.0))
-                | _ -> printfn "Parse failed."
-            with
-                | MatchError(x) -> printfn "Lexing failed: %s" x
+            LexAndPrint program 0 |> ignore
+            let expr = (parse program)
+            Reduce expr (fun success ->
+                printfn ""
+                printfn "Parse successful\n%A" (first2 success)
+                printfn "\nResult: %f" (
+                    Reduce (Evaluate (first2 success))
+                        (fun result -> result) (fun error -> printf "%s " error; 0.0))
+            ) (fun error -> 
+                printfn ""
+                printfn "Parse failed\n%s" error
+            )
             printfn "------------------------------------------------------------------------------------"
             run ()
 
