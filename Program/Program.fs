@@ -7,13 +7,12 @@ open Calculator.Parser.Parser
 open Calculator.Lexer.Lexer
 
 module Program =
-
     let rec LexAndPrint string index =
-        let tok = nextToken (string, index) in
-        let t = last3 tok in
-        match first2 t with
-        | EOF -> ()
-        | _ -> printfn "%s %s %d" (second2 t) ((first2 t).ToString()) (middle3 tok)|> ignore; LexAndPrint (first3 tok) (middle3 tok)
+        Bind (nextToken (string, index)) (fun tok ->
+            let t = last3 tok in
+            match first2 t with
+            | EOF -> Success()
+            | _ -> printfn "%s %s %d" (second2 t) ((first2 t).ToString()) (middle3 tok) |> ignore; LexAndPrint (first3 tok) (middle3 tok))
 
     let rec run () =
         printf ">"
