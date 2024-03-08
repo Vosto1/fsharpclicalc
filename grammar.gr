@@ -3,17 +3,20 @@
 %token NUM
 %token LPAR
 %token RPAR
+%token COMMA
 
 %token ADD
 %token SUB
 %token DIV
 %token MUL
 %token UMINUS
+%token POWER
+%token ROOT
 
 %%
 
 Expr : Expr2 Expr12
-    ;
+     ;
 
 Expr12 : ADD Expr2 Expr12
     | SUB Expr2 Expr12
@@ -28,7 +31,15 @@ Expr22 : MUL Expr3 Expr22
     |
     ;
 
-Expr3 : NUM
+Expr3 : Expr4 Expr33
+      ;
+
+Expr33 : POWER Expr4 Expr33
+       |
+       ;
+
+Expr4 : NUM
     | LPAR Expr RPAR
-    | UMINUS Expr3
+    | UMINUS Expr4
+    | ROOT LPAR Expr COMMA Expr RPAR
     ;

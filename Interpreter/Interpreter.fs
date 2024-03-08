@@ -21,7 +21,8 @@ module Interpreter =
             | SUB -> x - y
             | MUL -> x * y
             | DIV -> x / y
-
+            | POWER -> x ** y
+        
         let executeUnaryOperation (operator : Unary) (x : float) =
             match operator with
             | UMINUS -> -x
@@ -34,6 +35,7 @@ module Interpreter =
             | BinaryOperatorExpressionEnd(x, y) -> evaluateBinaryOperatorExpressionEnd x y
             | UnaryOperatorExpression(x, y) -> evaluateUnaryOperatorExpression x y
             | ParanthesisedExpression(x) -> eval x
+            | FunctionExpression(x, y) -> evaluateFunctionExpression x y
             | x -> Error($"Unrecognized construct \"{x}\".")
 
         and evaluateBinaryOperatorExpressionStart expr1 expr2 =
@@ -80,6 +82,17 @@ module Interpreter =
                 let value = executeUnaryOperation expr1 z
                 Success((Nothing, value))
             | x -> Error($"There cannot be a next operation for {expr2}"))
+        
+        and evaluateFunctionExpression functionType paramList =
+            match functionType with
+            | SQRT -> 
+                match paramList with | x::y::[] ->
+                Bind (eval x) (fun res ->
+                    Bind (eval y) (fun res2 ->
+                        match (res, res2) with
+                        | ((Nothing, x), (Nothing, y)) -> Success(Nothing, (executeOperation (1.0 / x) POWER y))
+                        | _ -> Error("I dunno")))
+            | x -> Error($"Function {x} is unsupported")
         
         Bind (eval expression) (fun res ->
             match res with

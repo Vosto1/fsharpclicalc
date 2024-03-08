@@ -5,22 +5,27 @@ open Calculator.Core.AbstractSyntax
 open Calculator.Core.Result
 module Lexer = 
     open System.Text.RegularExpressions
-    type TokenType = NUM | OP of Operator | SEP | EOF
+    type TokenType = NUM | OP of Operator | SEP of Separator | EOF | FUNC of FunctionType
     type Token = TokenType * string
-    let (separator : Regex) = new Regex("\G(\(|\))")
-    let (op : Regex) = new Regex("\G(\+|\*|\/|\-)")
-    let (num : Regex) = new Regex("\G([0-9]+)")
+    let (separator : Regex) = new Regex("\G(\(|\)|\,)")
+    let (op : Regex) = new Regex("\G(\*\*|\*|\+|\/|\-|\^)") // pattern order matters!!
+    let (num : Regex) = new Regex("\G([0-9]+(\.[0-9]+)?)")
+    let (builtinFunctions : Regex) = new Regex("\G(sqrt)")
     
     // get next word in the string
+    // TODO: add whitespace handler
     let fword (extrf: string) (i : int) =
         // matches in the list are put in importance hierarcy, there is no overlap so it doesn't actually matter currently
-        let x = op.Match(extrf, i)
+        let operator = op.Match(extrf, i)
+        let fn = builtinFunctions.Match(extrf, i)
+        let sep = separator.Match(extrf, i)
         List.filter (fun x ->
             let (y : Match) = first2 x in y.Success)
                 (
-                    (separator.Match(extrf, i), SEP) ::
-                    (x, OP(match x.Value with | "*" -> MUL | "/" -> DIV | "+" -> ADD | "-" -> SUB | _ -> MUL)) ::
-                    (num.Match(extrf, i), NUM) :: []
+                    (sep, SEP(match sep.Value with | "(" -> LPAR | ")" -> RPAR | "," -> COMMA | _ -> LPAR)) ::
+                    (operator, OP(match operator.Value with | "*" -> MUL | "/" -> DIV | "+" -> ADD | "-" -> SUB | "^" -> POWER | "**" -> POWER | _ -> MUL)) ::
+                    (num.Match(extrf, i), NUM) :: 
+                    (fn, FUNC(match fn.Value with | "sqrt" -> SQRT | _ -> SQRT)) :: []
                 )
 
     let tokenize (data : string * int) (add : int -> int) =

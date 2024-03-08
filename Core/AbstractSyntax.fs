@@ -6,18 +6,27 @@ module AbstractSyntax =
         | SUB
         | MUL
         | DIV
+        | POWER
     
+    type Separator = | LPAR | RPAR | COMMA
+
     type Unary =
         | UMINUS
+
+    type FunctionType = | SQRT
 
     type Expression =
         | Number of float
         | BinaryOperatorExpressionStart of Expression * Expression
-        | BinaryOperatorExpressionList of Operator * Expression *Expression
+        | BinaryOperatorExpressionList of Operator * Expression * Expression
         | BinaryOperatorExpressionEnd of Operator * Expression
         | UnaryOperatorExpression of Unary * Expression
         | ParanthesisedExpression of Expression
+        | FunctionExpression of FunctionType * ParameterList
         | Nothing
+    and ParameterList = Expression list
+
+
 
     let isAddition op =
         match op with
@@ -36,12 +45,12 @@ module AbstractSyntax =
 
     let isDivision op =
         match op with
-        | DiV -> true
+        | DIV -> true
         | _ -> false
 
     let isUminus unary =
         match unary with
-        | UMiNUS -> true
+        | UMINUS -> true
         | _ -> false
     
     let isNumber expr =
