@@ -90,7 +90,7 @@ module Interpreter =
                 Bind (eval x) (fun res ->
                     Bind (eval y) (fun res2 ->
                         match (res, res2) with
-                        | ((Nothing, x), (Nothing, y)) -> Success(Nothing, (executeOperation (1.0 / x) POWER y))
+                        | ((Nothing, x), (Nothing, y)) -> Success(Nothing, (executeOperation y POWER (1.0 / x)))
                         | _ -> Error("I dunno")))
             | x -> Error($"Function {x} is unsupported")
         
