@@ -164,5 +164,11 @@ module Parser =
                                                                 then Error($"Unexpected symbol at {nextIndex3} expected RPAR \")\" found {second2 token}")
                                                                 else Success((FunctionExpression(ROOT, res::res2::[])), nextIndex4)))))))
                     | _ -> Error($"Unexpected symbol at {index} expected SQRT \"sqrt\" found {x.ToString()}")
+                | CONST(x) ->
+                    match x with
+                    | x when x = EULER || x =PI -> 
+                        Bind (consume data index) (fun (_, newIndex) -> 
+                        Success(ConstantExpression(x), newIndex))
+                    | _ -> Error($"Unsupported constant {x.ToString()} at {index}")
                 | _ -> Error($"Unexpected end of string at {index}"))
         Expr 0

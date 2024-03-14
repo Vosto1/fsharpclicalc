@@ -12,6 +12,8 @@
 %token UMINUS
 %token POWER
 %token ROOT
+%token EULER
+%token PI
 
 %%
 
@@ -39,6 +41,8 @@ Expr33 : POWER Expr4 Expr33
        ;
 
 Expr4 : NUM
+    | EULER
+    | PI
     | LPAR Expr RPAR
     | UMINUS Expr4
     | ROOT LPAR Expr COMMA Expr RPAR

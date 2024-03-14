@@ -5,12 +5,13 @@ open Calculator.Core.AbstractSyntax
 open Calculator.Core.Result
 module Lexer = 
     open System.Text.RegularExpressions
-    type TokenType = NUM | OP of Operator | SEP of Separator | EOF | FUNC of FunctionType
+    type TokenType = NUM | OP of Operator | SEP of Separator | EOF | FUNC of FunctionType | CONST of ConstantType
     type Token = TokenType * string
     let (separator : Regex) = new Regex("\G(\(|\)|\,)")
     let (op : Regex) = new Regex("\G(\*\*|\*|\+|\/|\-|\^)") // pattern order matters!!
     let (num : Regex) = new Regex("\G([0-9]+(\.[0-9]+)?)")
     let (builtinFunctions : Regex) = new Regex("\G(root)")
+    let (builtinConstants : Regex) = new Regex("\G(e|pi)")
     
     // get next word in the string
     // TODO: add whitespace handler
@@ -19,13 +20,15 @@ module Lexer =
         let operator = op.Match(extrf, i)
         let fn = builtinFunctions.Match(extrf, i)
         let sep = separator.Match(extrf, i)
+        let constant = builtinConstants.Match(extrf, i)
         List.filter (fun x ->
             let (y : Match) = first2 x in y.Success)
                 (
                     (sep, SEP(match sep.Value with | "(" -> LPAR | ")" -> RPAR | "," -> COMMA | _ -> LPAR)) ::
                     (operator, OP(match operator.Value with | "*" -> MUL | "/" -> DIV | "+" -> ADD | "-" -> SUB | "^" -> POWER | "**" -> POWER | _ -> MUL)) ::
                     (num.Match(extrf, i), NUM) :: 
-                    (fn, FUNC(match fn.Value with | "root" -> ROOT | _ -> ROOT)) :: []
+                    (fn, FUNC(match fn.Value with | "root" -> ROOT | _ -> ROOT)) ::
+                    (constant, CONST(match constant.Value with | "e" -> EULER | "pi" -> PI | _ -> EULER)) :: []
                 )
 
     let tokenize (data : string * int) (add : int -> int) =

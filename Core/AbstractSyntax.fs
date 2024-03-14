@@ -15,6 +15,8 @@ module AbstractSyntax =
 
     type FunctionType = | ROOT
 
+    type ConstantType = | EULER | PI
+
     type Expression =
         | Number of float
         | BinaryOperatorExpressionStart of Expression * Expression
@@ -23,6 +25,7 @@ module AbstractSyntax =
         | UnaryOperatorExpression of Unary * Expression
         | ParanthesisedExpression of Expression
         | FunctionExpression of FunctionType * ParameterList
+        | ConstantExpression of ConstantType
         | Nothing
     and ParameterList = Expression list
 
