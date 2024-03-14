@@ -13,7 +13,7 @@ module AbstractSyntax =
     type Unary =
         | UMINUS
 
-    type FunctionType = | SQRT
+    type FunctionType = | ROOT
 
     type Expression =
         | Number of float

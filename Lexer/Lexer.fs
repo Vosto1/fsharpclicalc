@@ -10,7 +10,7 @@ module Lexer =
     let (separator : Regex) = new Regex("\G(\(|\)|\,)")
     let (op : Regex) = new Regex("\G(\*\*|\*|\+|\/|\-|\^)") // pattern order matters!!
     let (num : Regex) = new Regex("\G([0-9]+(\.[0-9]+)?)")
-    let (builtinFunctions : Regex) = new Regex("\G(sqrt)")
+    let (builtinFunctions : Regex) = new Regex("\G(root)")
     
     // get next word in the string
     // TODO: add whitespace handler
@@ -25,7 +25,7 @@ module Lexer =
                     (sep, SEP(match sep.Value with | "(" -> LPAR | ")" -> RPAR | "," -> COMMA | _ -> LPAR)) ::
                     (operator, OP(match operator.Value with | "*" -> MUL | "/" -> DIV | "+" -> ADD | "-" -> SUB | "^" -> POWER | "**" -> POWER | _ -> MUL)) ::
                     (num.Match(extrf, i), NUM) :: 
-                    (fn, FUNC(match fn.Value with | "sqrt" -> SQRT | _ -> SQRT)) :: []
+                    (fn, FUNC(match fn.Value with | "root" -> ROOT | _ -> ROOT)) :: []
                 )
 
     let tokenize (data : string * int) (add : int -> int) =

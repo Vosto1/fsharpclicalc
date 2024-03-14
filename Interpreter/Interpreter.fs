@@ -85,7 +85,7 @@ module Interpreter =
         
         and evaluateFunctionExpression functionType paramList =
             match functionType with
-            | SQRT -> 
+            | ROOT -> 
                 match paramList with | x::y::[] ->
                 Bind (eval x) (fun res ->
                     Bind (eval y) (fun res2 ->

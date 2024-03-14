@@ -141,7 +141,7 @@ module Parser =
                     | _ -> Error($"Unexpected symbol at {index} expected LPAR \"(\" found {x.ToString()}")
                 | FUNC(x) ->
                     match x with
-                    | SQRT -> 
+                    | ROOT -> 
                         Bind (consume data index) (fun (_, newIndex) ->
                             Bind (consume data newIndex) (fun (token, nextIndex) ->
                                 if not (lexMatch token (SEP(LPAR)))
@@ -162,7 +162,7 @@ module Parser =
                                                             Bind (consume data nextIndex3) (fun (token, nextIndex4) ->
                                                                 if not (lexMatch token (SEP(RPAR)))
                                                                 then Error($"Unexpected symbol at {nextIndex3} expected RPAR \")\" found {second2 token}")
-                                                                else Success((FunctionExpression(SQRT, res::res2::[])), nextIndex4)))))))
+                                                                else Success((FunctionExpression(ROOT, res::res2::[])), nextIndex4)))))))
                     | _ -> Error($"Unexpected symbol at {index} expected SQRT \"sqrt\" found {x.ToString()}")
                 | _ -> Error($"Unexpected end of string at {index}"))
         Expr 0
