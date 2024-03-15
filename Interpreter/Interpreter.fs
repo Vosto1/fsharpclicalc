@@ -85,14 +85,31 @@ module Interpreter =
                 | x -> Error($"There cannot be a next operation for {expr2}"))
         
         and evaluateFunctionExpression functionType paramList =
-            match functionType with
-            | ROOT -> 
+            let evaluateTwoParameterFunctionApplication (application : float -> float -> float) paramList functionType =
                 match paramList with | x::y::[] ->
                     Bind (eval x) (fun res ->
                         Bind (eval y) (fun res2 ->
                             match (res, res2) with
-                            | ((Nothing, x), (Nothing, y)) -> Success(Nothing, (executeOperation y POWER (1.0 / x)))
-                            | _ -> Error("I dunno")))
+                            | ((Nothing, x), (Nothing, y)) -> Success(Nothing, (application x y))
+                            | _ -> Error($"Next operation not possible for {functionType.ToString().ToLower()}({x},{y})")))
+            let evaluateOneParameterFunctionApplication (application : float -> float) paramList functionType =
+                match paramList with | x::[] ->
+                    Bind (eval x) (fun res ->
+                        match res with
+                        | (Nothing, x) -> Success(Nothing, application x)
+                        | _ -> Error($"Next operation not possible for {functionType.ToString().ToLower()}({x})"))
+
+            match functionType with
+            | ROOT -> evaluateTwoParameterFunctionApplication (fun x y -> executeOperation y POWER (1.0 / x)) paramList ROOT
+            | LOG -> evaluateTwoParameterFunctionApplication (fun x y -> System.Math.Log(y, x)) paramList LOG
+            | COS -> evaluateOneParameterFunctionApplication (fun x -> System.Math.Cos x) paramList COS
+            | SIN -> evaluateOneParameterFunctionApplication (fun x -> System.Math.Sin x) paramList SIN
+            | TAN -> evaluateOneParameterFunctionApplication (fun x -> System.Math.Tan x) paramList TAN
+            | ARCCOS -> evaluateOneParameterFunctionApplication (fun x -> System.Math.Acos x) paramList ARCCOS
+            | ARCSIN -> evaluateOneParameterFunctionApplication (fun x -> System.Math.Asin x) paramList ARCSIN
+            | ARCTAN -> evaluateOneParameterFunctionApplication (fun x -> System.Math.Atan x) paramList ARCTAN
+            | NL -> evaluateOneParameterFunctionApplication (fun x -> System.Math.Log x) paramList NL
+            | ABS -> evaluateOneParameterFunctionApplication (fun x -> System.Math.Abs x) paramList ABS
             | x -> Error($"Function {x} is unsupported")
 
         and evaluateConstantExpression constantType =

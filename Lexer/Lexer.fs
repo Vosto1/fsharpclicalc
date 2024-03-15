@@ -10,7 +10,7 @@ module Lexer =
     let (separator : Regex) = new Regex("\G(\(|\)|\,)")
     let (op : Regex) = new Regex("\G(\*\*|\*|\+|\/|\-|\^)") // pattern order matters!!
     let (num : Regex) = new Regex("\G([0-9]+(\.[0-9]+)?)")
-    let (builtinFunctions : Regex) = new Regex("\G(root)")
+    let (builtinFunctions : Regex) = new Regex("\G(root|cos|sin|tan|arccos|arcsin|arctan|log|nl|abs)") // |ceil|floor|max|min|average|median
     let (builtinConstants : Regex) = new Regex("\G(e|pi)")
     
     // get next word in the string
@@ -27,7 +27,7 @@ module Lexer =
                     (sep, SEP(match sep.Value with | "(" -> LPAR | ")" -> RPAR | "," -> COMMA | _ -> LPAR)) ::
                     (operator, OP(match operator.Value with | "*" -> MUL | "/" -> DIV | "+" -> ADD | "-" -> SUB | "^" -> POWER | "**" -> POWER | _ -> MUL)) ::
                     (num.Match(extrf, i), NUM) :: 
-                    (fn, FUNC(match fn.Value with | "root" -> ROOT | _ -> ROOT)) ::
+                    (fn, FUNC(match fn.Value with | "root" -> ROOT | "cos" -> COS | "sin" -> SIN | "tan" -> TAN | "arccos" -> ARCCOS | "arcsin" -> ARCSIN | "arctan" -> ARCTAN | "log" -> LOG | "nl" -> NL | "abs" -> ABS | _ -> ROOT)) ::
                     (constant, CONST(match constant.Value with | "e" -> EULER | "pi" -> PI | _ -> EULER)) :: []
                 )
 

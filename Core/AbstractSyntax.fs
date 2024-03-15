@@ -13,7 +13,7 @@ module AbstractSyntax =
     type Unary =
         | UMINUS
 
-    type FunctionType = | ROOT
+    type FunctionType = | ROOT | COS | SIN | TAN | ARCCOS | ARCSIN | ARCTAN | LOG | NL | ABS
 
     type ConstantType = | EULER | PI
 

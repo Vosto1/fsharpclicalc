@@ -114,6 +114,42 @@ module Parser =
                 | _ -> Success((Nothing, index)))
         
         and Expr4 (index : int) : Result<Expression * int> =
+            let parseTwoParameterFunctionApplication data index functionType =
+                Bind (consume data index) (fun (_, newIndex) ->
+                    Bind (consume data newIndex) (fun (token, nextIndex) ->
+                        if not (lexMatch token (SEP(LPAR)))
+                        then Error($"Unexpected symbol at {newIndex} expected LPAR \"(\" found {second2 token}")
+                        else
+                            Bind (Expr nextIndex) (fun (res, nextIndex1) ->
+                                match res with
+                                | Nothing -> Error($"Unexpected empty expression at {nextIndex} expected expression")
+                                | _ ->
+                                    Bind (consume data nextIndex1) (fun (token, nextIndex2) ->
+                                        if not (lexMatch token (SEP(COMMA)))
+                                        then Error($"Unexpected symbol at {nextIndex1} expected COMMA \",\" found {second2 token}")
+                                        else
+                                            Bind (Expr nextIndex2) (fun (res2, nextIndex3) ->
+                                                match res2 with
+                                                | Nothing -> Error($"Unexpected empty expression at {nextIndex2} expected expression")
+                                                | _ ->
+                                                    Bind (consume data nextIndex3) (fun (token, nextIndex4) ->
+                                                        if not (lexMatch token (SEP(RPAR)))
+                                                        then Error($"Unexpected symbol at {nextIndex3} expected RPAR \")\" found {second2 token}")
+                                                        else Success((FunctionExpression(functionType, res::res2::[])), nextIndex4)))))))
+            let parseOneParameterFunctionApplication data index functionType =
+                Bind (consume data index) (fun (_, newIndex) ->
+                    Bind (consume data newIndex) (fun (token, nextIndex) ->
+                        if not (lexMatch token (SEP(LPAR)))
+                        then Error($"Unexpected symbol at {newIndex} expected LPAR \"(\" found {second2 token}")
+                        else
+                            Bind (Expr nextIndex) (fun (res, nextIndex1) -> 
+                                match res with
+                                | Nothing -> Error($"Unexpected empty expression at {nextIndex} expected expression")
+                                | _ -> 
+                                    Bind (consume data nextIndex1) (fun (token1, nextIndex2) ->
+                                        if not (lexMatch token1 (SEP(RPAR)))
+                                        then Error($"Unexpected symbol at {nextIndex1} expected RPAR \")\" found {second2 token}")
+                                        else Success((FunctionExpression(functionType, res::[])), nextIndex2)))))
             let validate (op : Operator) (index : int) =
                 match op with
                 | SUB -> Success()
@@ -141,34 +177,17 @@ module Parser =
                     | _ -> Error($"Unexpected symbol at {index} expected LPAR \"(\" found {x.ToString()}")
                 | FUNC(x) ->
                     match x with
-                    | ROOT -> 
-                        Bind (consume data index) (fun (_, newIndex) ->
-                            Bind (consume data newIndex) (fun (token, nextIndex) ->
-                                if not (lexMatch token (SEP(LPAR)))
-                                then Error($"Unexpected symbol at {newIndex} expected LPAR \"(\" found {second2 token}")
-                                else
-                                    Bind (Expr nextIndex) (fun (res, nextIndex1) ->
-                                        match res with
-                                        | Nothing -> Error($"Unexpected empty expression at {nextIndex} expected expression")
-                                        | _ ->
-                                            Bind (consume data nextIndex1) (fun (token, nextIndex2) ->
-                                                if not (lexMatch token (SEP(COMMA)))
-                                                then Error($"Unexpected symbol at {nextIndex1} expected COMMA \",\" found {second2 token}")
-                                                else
-                                                    Bind (Expr nextIndex2) (fun (res2, nextIndex3) ->
-                                                        match res2 with
-                                                        | Nothing -> Error($"Unexpected empty expression at {nextIndex2} expected expression")
-                                                        | _ ->
-                                                            Bind (consume data nextIndex3) (fun (token, nextIndex4) ->
-                                                                if not (lexMatch token (SEP(RPAR)))
-                                                                then Error($"Unexpected symbol at {nextIndex3} expected RPAR \")\" found {second2 token}")
-                                                                else Success((FunctionExpression(ROOT, res::res2::[])), nextIndex4)))))))
-                    | _ -> Error($"Unexpected symbol at {index} expected SQRT \"sqrt\" found {x.ToString()}")
+                    | x when x = ROOT || x = LOG ->
+                        parseTwoParameterFunctionApplication data index x
+                    | x when x = COS || x = SIN || x = TAN || x = ARCCOS || x = ARCSIN || x = ARCTAN || x = NL || x = ABS ->
+                        parseOneParameterFunctionApplication data index x
+                    | _ -> Error($"Unexpected symbol at {index} found {x.ToString()}")
                 | CONST(x) ->
                     match x with
-                    | x when x = EULER || x =PI -> 
+                    | x when x = EULER || x = PI -> 
                         Bind (consume data index) (fun (_, newIndex) -> 
                         Success(ConstantExpression(x), newIndex))
                     | _ -> Error($"Unsupported constant {x.ToString()} at {index}")
                 | _ -> Error($"Unexpected end of string at {index}"))
+
         Expr 0
