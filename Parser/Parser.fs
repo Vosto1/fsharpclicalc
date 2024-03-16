@@ -159,7 +159,7 @@ module Parser =
                 match t with
                 | NUM ->
                     Bind (consume data index) (fun (token, newIndex) ->
-                        Success((Number(int (second2 (second2 token))), newIndex)))
+                        Success((Number(float (second2 (second2 token))), newIndex)))
                 | OP(x) ->
                     Bind (consume data index) (fun (_, newIndex) ->
                         Bind (Expr3 newIndex) (fun res -> 
